@@ -7,7 +7,7 @@ import os
 import random
 
 # إعدادات البوت
-TOKEN = 'MTQ3NzY4NjQ2MjA4NTMzNzMwMg.GC9lkK.oz7yjvDRqaMaqn-hEa_0KIuclXdwcRRWbepFtA'
+TOKEN = 'MTQ3NzY4NjQ2MjA4NTMzNzMwMg.GmtjF2.gH4G_iKuhQNPIHw4b_gpOOwqmI7-Tk3kJFRL0I'
 
 class MyBot(commands.Bot):
     def __init__(self):
