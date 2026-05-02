@@ -5,9 +5,16 @@ import asyncio
 import json
 import os
 import random
+import dotenv
 
-# إعدادات البوت
-TOKEN = 'MTQ3NzY4NjQ2MjA4NTMzNzMwMg.GmtjF2.gH4G_iKuhQNPIHw4b_gpOOwqmI7-Tk3kJFRL0I'
+# تحميل متغيرات البيئة من ملف .env
+dotenv.load_dotenv()
+
+# إعدادات البوت - استخدام التوكن من ملف .env
+TOKEN = os.getenv('DISCORD_TOKEN')
+
+if not TOKEN:
+    raise ValueError("❌ لم يتم العثور على DISCORD_TOKEN في ملف .env")
 
 class MyBot(commands.Bot):
     def __init__(self):
@@ -17,7 +24,7 @@ class MyBot(commands.Bot):
         super().__init__(command_prefix="!", intents=intents)
         self.tokens_data = self.load_data()
         self.active_tasks = {}
-        self.auto_react_channels = [] # القنوات التي يراقبها البوت للرياكشن التلقائي
+        self.auto_react_channels = []
 
     def load_data(self):
         if os.path.exists('data_v2.json'):
@@ -26,7 +33,7 @@ class MyBot(commands.Bot):
         return {
             "tokens": [], 
             "clans": {}, 
-            "clan_messages": {}, # رسائل مخصصة لكل كلان
+            "clan_messages": {},
             "settings": {"auto_status": True}
         }
 
@@ -41,10 +48,8 @@ class MyBot(commands.Bot):
 
     @tasks.loop(minutes=5)
     async def status_rotator(self):
-        """تغيير حالة البوت والتوكنات (محاكاة)"""
         if self.tokens_data["settings"].get("auto_status"):
             statuses = [discord.Status.online, discord.Status.idle, discord.Status.dnd]
-            # هنا نغير حالة البوت الرئيسي، وبالنسبة للتوكنات يتم التعامل معها في سكريبت التشغيل الخاص بها
             await self.change_presence(status=random.choice(statuses))
 
 bot = MyBot()
@@ -96,9 +101,8 @@ async def join_voice(interaction: discord.Interaction, clan_name: str, channel_i
     await interaction.response.send_message(f"🚀 جاري إدخال {len(tokens)} توكن بتأخير عشوائي للتمويه...")
     
     for token in tokens:
-        delay = random.uniform(2.0, 8.0) # تأخير بين 2 لـ 8 ثواني
+        delay = random.uniform(2.0, 8.0)
         await asyncio.sleep(delay)
-        # منطق الدخول الفعلي (محاكاة هنا)
         print(f"Token {token[:5]} joined {channel_id} after {delay:.2f}s")
 
 # --- ميزات الفزعة والتفاعل ---
@@ -107,7 +111,6 @@ async def join_voice(interaction: discord.Interaction, clan_name: str, channel_i
 async def fazaa(interaction: discord.Interaction, channel_id: str):
     all_tokens = bot.tokens_data["tokens"]
     await interaction.response.send_message(f"🚨 فززززعة! جاري توجيه {len(all_tokens)} توكن إلى الروم {channel_id}...")
-    # دخول سريع بدون تأخير كبير
     for token in all_tokens:
         await asyncio.sleep(0.5)
         print(f"Token {token[:5]} rushing to {channel_id}")
@@ -123,16 +126,12 @@ async def auto_react_setup(interaction: discord.Interaction, channel: discord.Te
 
 @bot.event
 async def on_raw_reaction_add(payload):
-    """عندما تضع رياكشن، التوكنات تقلدك"""
     if payload.channel_id in bot.auto_react_channels:
-        # إذا كان الشخص الذي وضع الرياكشن هو صاحب البوت (يمكنك إضافة شرط الـ ID هنا)
         print(f"New reaction detected: {payload.emoji}. Tokens will mimic...")
-        # منطق جعل التوكنات تضع نفس الرياكشن
 
 @bot.tree.command(name="mass_react", description="جعل التوكنات تتفاعل مع رسالة معينة بايموجي محدد")
 async def mass_react(interaction: discord.Interaction, message_id: str, emoji: str):
     await interaction.response.send_message(f"✅ جاري وضع رياكشن {emoji} على الرسالة {message_id} بواسطة جميع التوكنات.")
-    # تنفيذ الرياكشن من كل التوكنات
 
 # --- الإحصائيات ---
 
