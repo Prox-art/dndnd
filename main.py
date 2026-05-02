@@ -5,16 +5,19 @@ import asyncio
 import json
 import os
 import random
-import dotenv
+from dotenv import load_dotenv
 
-# تحميل متغيرات البيئة من ملف .env
-dotenv.load_dotenv()
+load_dotenv()
 
-# إعدادات البوت - استخدام التوكن من ملف .env
 TOKEN = os.getenv('DISCORD_TOKEN')
 
+# كود التحقق المؤقت
 if not TOKEN:
-    raise ValueError("❌ لم يتم العثور على DISCORD_TOKEN في ملف .env")
+    print("❌ الخطأ: ملف .env لا يحتوي على DISCORD_TOKEN")
+    exit()
+else:
+    print(f"🔍 جاري قراءة التوكن... أول 5 حروف: {TOKEN[:5]} | آخر 5 حروف: {TOKEN[-5:]}")
+    print("⚠️ إذا هذه الحروف لا تتطابق مع توكنك الجديد، فالمشكلة من إعدادات المنصة (Secrets)")
 
 class MyBot(commands.Bot):
     def __init__(self):
